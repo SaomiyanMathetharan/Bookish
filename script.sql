@@ -23,7 +23,7 @@ CREATE TABLE copiesOfBook (
 
 CREATE TABLE loans (
                        loanid INTEGER PRIMARY KEY UNIQUE,
-                       dueDate INTEGER NOT NULL,
+                       dueDate DATE NOT NULL,
                        loanStatus VARCHAR (50) NOT NULL,
                        barcodeNumber VARCHAR (13) NOT NULL,
                        username VARCHAR (50) NOT NULL,
@@ -31,3 +31,8 @@ CREATE TABLE loans (
                        CONSTRAINT username_fkey FOREIGN KEY (username) REFERENCES users
 
 );
+
+INSERT INTO users VALUES ('SaoMat', 'Saomiyan', 'Mathetharan', 'sao@sao.com', 'thisIsHashed', '12345');
+INSERT INTO books VALUES (1, '9780333791035', 'The Great Gatsby', 'Fitzgerald');
+INSERT INTO copiesofbook VALUES ('1234567890', 1);
+INSERT INTO loans VALUES (1, date '2022-06-28', 'BORROWED', '1234567890', 'SaoMat');
