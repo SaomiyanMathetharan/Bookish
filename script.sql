@@ -9,7 +9,7 @@ CREATE TABLE users (
 
 CREATE TABLE books (
                        bookID INTEGER PRIMARY KEY UNIQUE,
-                       isbn VARCHAR (10) NOT NULL,
+                       isbn VARCHAR (13) NOT NULL,
                        bookTitle VARCHAR (100) NOT NULL,
                        author VARCHAR (100) NOT NULL,
                        genre VARCHAR (50)
@@ -31,6 +31,8 @@ CREATE TABLE loans (
                        CONSTRAINT username_fkey FOREIGN KEY (username) REFERENCES users
 
 );
+
+GRANT SELECT, INSERT, UPDATE on ALL TABLES IN SCHEMA public TO bookish;
 
 INSERT INTO users VALUES ('SaoMat', 'Saomiyan', 'Mathetharan', 'sao@sao.com', 'thisIsHashed', '12345');
 INSERT INTO books VALUES (1, '9780333791035', 'The Great Gatsby', 'Fitzgerald');

@@ -18,6 +18,8 @@
   "homepage": "https://github.com/SaomiyanMathetharan/Bookish#readme",
   "dependencies": {
     "express": "^4.18.1",
+    "log4js": "^6.5.2",
     "pg-promise": "^10.11.1"
-  }
+  },
+  "type": "module"
 }
