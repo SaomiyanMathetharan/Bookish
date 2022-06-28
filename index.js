@@ -13,17 +13,22 @@ log4js.configure( {
     }
 })
 
-let api = new API();
+const logger = log4js.getLogger('index.js');
 
-var app = express();
-app.use(express.json())
-const port = 3000
+const api = new API();
+
+const app = express();
+app.use(express.json());
+
+const port = 3000;
 
 app.listen(port, () => {
+    logger.info('App initialised, listening on port ' + port);
     console.log("Server running on port " + port)
 })
 
 app.get("/", async (req, res) => {
+    logger.info("Get request for / received, sending catalogue");
     api.getAllBooks()
         .then((result) => res.send(result))
         .catch((error) => {

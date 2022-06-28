@@ -14,8 +14,4 @@ export default class Book {
         this.author = author;
         this.genre = genre;
     }
-
-    static getBookFromID(bookID) {
-
-    }
 }

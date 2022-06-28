@@ -1,6 +1,9 @@
 import Book from "./models/book.js";
 import pgPromise from "pg-promise";
 import md5 from "md5-hash";
+import log4js from "log4js";
+
+const logger = log4js.getLogger('api.js');
 
 export default class API {
 
@@ -10,6 +13,7 @@ export default class API {
     }
 
     getAllBooks() {
+        logger.info('Getting list books from database');
         return this.db.any('SELECT * FROM books')
             .then ((data)=>{
                 return data.map(book => this.createBook(book))
@@ -18,17 +22,20 @@ export default class API {
 
     //doRequest = (path) =>
     createBook (book){
+        logger.trace('Creating book object with details: ' + book);
         return new Book(book.bookid, book.isbn, book.booktitle, book.author, book.genre);
     }
 
     checkDetails = (details) => {
-        return this.addHashedPasswordToDetails(details).then(this.checkForPassword)
+        logger.info("Checking credentials")
+        return this.addHashedPasswordToDetails(details).then(this.checkCredentials)
     }
 
-    checkForPassword = (details) => {
+    checkCredentials = (details) => {
         return this.db.any('SELECT * FROM users WHERE username = $1 AND hashedpassword = $2', [details.username, details.password])
             .then((data) => {
                 if(data.length === 0) {
+                    logger.warn("Incorrect credentials supplied")
                     console.log(details.password)
                     throw "Incorrect credentials"
                 }
@@ -38,6 +45,7 @@ export default class API {
 
     addHashedPasswordToDetails = (details) => {
         details.password = md5.default(details.password);
+        logger.info("Successfully hashed password");
         return Promise.resolve(details);
     }
 }
