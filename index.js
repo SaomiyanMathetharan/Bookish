@@ -36,15 +36,18 @@ app.post("/details", (req, res) => {
     res.json(req.body);
 })
 
-const username = question("Enter username:");
-const password = question("Enter password:");
+//const username = question("Enter username:");
+//const password = question("Enter password:");
+/*
 const data = await axios.post('http://localhost:3000/details', {
     username: username, password: password
 }).then(res=>res.data);
 console.log(data);
+*/
+const details = {
+    username: 'RebWoo', password: 'thisIsHashed'
+}
 
+console.log(await api.checkDetails(details).catch((error) => console.log(error)))
 
-api.checkForUser({
-    username: 'SaoMat', password: 'thisIsHashed'
-})
 

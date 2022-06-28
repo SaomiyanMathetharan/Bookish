@@ -1,5 +1,6 @@
 import Book from "./models/book.js";
 import pgPromise from "pg-promise";
+import md5 from "md5-hash";
 
 export default class API {
 
@@ -15,12 +16,28 @@ export default class API {
             })
     }
 
-    createBook(book){
+    //doRequest = (path) =>
+    createBook (book){
         return new Book(book.bookid, book.isbn, book.booktitle, book.author, book.genre);
     }
 
-    checkForUser(details){
-        //let query = 'SELECT * FROM user WHERE username == '+details.username+' AND password == '+details.password)'
-        return this.db.any('SELECT * FROM users WHERE username = $(username) AND hashedpassword = $(password)', details)
+    checkDetails = (details) => {
+        return this.addHashedPasswordToDetails(details).then(this.checkForPassword)
+    }
+
+    checkForPassword = (details) => {
+        return this.db.any('SELECT * FROM users WHERE username = $1 AND hashedpassword = $2', [details.username, details.password])
+            .then((data) => {
+                if(data.length === 0) {
+                    console.log(details.password)
+                    throw "Incorrect credentials"
+                }
+                    return details;
+            })
+    }
+
+    addHashedPasswordToDetails = (details) => {
+        details.password = md5.default(details.password);
+        return Promise.resolve(details);
     }
 }
