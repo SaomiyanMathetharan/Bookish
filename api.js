@@ -18,4 +18,9 @@ export default class API {
     createBook(book){
         return new Book(book.bookid, book.isbn, book.booktitle, book.author, book.genre);
     }
+
+    checkForUser(details){
+        //let query = 'SELECT * FROM user WHERE username == '+details.username+' AND password == '+details.password)'
+        return this.db.any('SELECT * FROM users WHERE username = $(username) AND hashedpassword = $(password)', details)
+    }
 }
