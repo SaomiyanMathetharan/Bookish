@@ -1,0 +1,46 @@
+BOOKISH DATABASE DESIGN
+TABLE: Users
+- PK: username
+- email
+- accessToken
+- hashedPassword
+
+TABLE: Books
+- PK: bookID
+- ISBN
+- bookTitle
+- author
+- genre
+
+TABLE: copiesOfBook
+- PK: barcodeNumber 
+- FK: bookID
+
+TABLE: Loans
+- PK: loanID
+- FK: barcodeNumber
+- FK: username
+- dueDate
+- loanStatus (i.e., if the book has been returned)
+
+
+to get library catalogue:
+- get all from books table
+
+to get list of books currently checked out in user's name:
+- get all loans in loans table which have given username 
+
+search books by title or author:
+- get all from books table with specified title/author
+
+to get number of copies of book
+- count the number of instances of the book's bookID in the copiesOfBook table 
+
+to get number of copies available
+- get total number
+- subtract all instances where there is a non-returned loan 
+
+adding a new book
+- check the number of copies being added and then create that many new instances within copiesOfBook
+- each new book has a generated barcode number 
+
