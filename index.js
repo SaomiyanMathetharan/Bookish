@@ -1,6 +1,5 @@
 import log4js from 'log4js';
 import express from 'express';
-import pgPromise from "pg-promise";
 import API from "./api.js";
 import { question } from "readline-sync";
 import axios from "axios";
