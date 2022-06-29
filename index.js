@@ -19,7 +19,7 @@ const logger = log4js.getLogger('index.js');
 
 const api = new API();
 
-configurePassport(passport, api)
+configurePassport(api)
 
 const app = express();
 app.use(passport.initialize());
@@ -46,5 +46,17 @@ app.post("/login", (req, res) => {
     api.getAuthenticationToken(req.body).then((tokenObject) => res.json(tokenObject));
 })
 
-app.post('/testToken', passport.authenticate('jwt', {session:false},
-    (req, res) => console.log("Token received")));
+app.post('/testToken', function (req, res) {
+    passport.authenticate('jwt', {session:false},
+        (err, user) => {
+            if (err || !user) {
+                return res.status(400).json({
+                    message: "Something went wrong :/",
+                    user: user
+                })
+            }
+            else {
+                return res.status(200);
+            }
+        })
+});
