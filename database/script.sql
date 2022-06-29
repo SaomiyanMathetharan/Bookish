@@ -3,8 +3,7 @@ CREATE TABLE users (
                        first_name VARCHAR (50),
                        last_name VARCHAR (50),
                        email VARCHAR (50) UNIQUE NOT NULL,
-                       hashedPassword VARCHAR (32) NOT NULL,
-                       accessToken VARCHAR(20) NOT NULL
+                       hashedPassword VARCHAR (32) NOT NULL
 );
 
 CREATE TABLE books (
@@ -34,7 +33,8 @@ CREATE TABLE loans (
 
 GRANT SELECT, INSERT, UPDATE on ALL TABLES IN SCHEMA public TO bookish;
 
-INSERT INTO users VALUES ('SaoMat', 'Saomiyan', 'Mathetharan', 'sao@sao.com', 'thisIsHashed', '12345');
+INSERT INTO users VALUES ('SaoMat', 'Saomiyan', 'Mathetharan', 'sao@sao.com', 'thisIsHashed');
 INSERT INTO books VALUES (1, '9780333791035', 'The Great Gatsby', 'Fitzgerald');
 INSERT INTO copiesofbook VALUES ('1234567890', 1);
 INSERT INTO loans VALUES (1, date '2022-06-28', 'BORROWED', '1234567890', 'SaoMat');
+INSERT INTO users VALUES ('Bex', 'Wood', 'bex@bex.com', 'c8a93833472c9fbf4ee5b0192543a5ae');

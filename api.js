@@ -2,6 +2,7 @@ import Book from "./models/book.js";
 import pgPromise from "pg-promise";
 import md5 from "md5-hash";
 import log4js from "log4js";
+import jwt from "jsonwebtoken"
 
 const logger = log4js.getLogger('api.js');
 
@@ -24,6 +25,16 @@ export default class API {
     createBook (book){
         logger.trace('Creating book object with details: ' + book);
         return new Book(book.bookid, book.isbn, book.booktitle, book.author, book.genre);
+    }
+
+    getAuthenticationToken = (details) => {
+        return this.checkDetails(details)
+            .then(this.generateAuthenticationToken)
+            .then((authToken) => {return {token: authToken}})
+    }
+
+    generateAuthenticationToken = (details) => {
+        return jwt.sign({username: details.username}, "secretBookishKey");
     }
 
     checkDetails = (details) => {
