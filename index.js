@@ -3,6 +3,7 @@ import express from 'express';
 import API from "./api.js";
 import { question } from "readline-sync";
 import axios from "axios";
+import passport from "passport";
 
 log4js.configure( {
     appenders: {
@@ -18,6 +19,7 @@ const logger = log4js.getLogger('index.js');
 const api = new API();
 
 const app = express();
+app.use(passport.initialize());
 app.use(express.json());
 
 const port = 3000;
