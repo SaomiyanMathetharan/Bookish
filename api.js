@@ -18,6 +18,14 @@ function createBook (book){
     return book.dataValues;
 }
 
+export function findBookByTitle(bookTitle) {
+    logger.info('Getting list books with title: '+bookTitle);
+    return books.findAll({where: {booktitle: bookTitle}})
+        .then ((data)=>{
+            return data.map(createBook)
+        })
+}
+
 export function fetchUser(usernameObj)  {
     return users.findOne({where: {username: usernameObj.username}});
 }
