@@ -27,6 +27,10 @@ export default class API {
         return new Book(book.bookid, book.isbn, book.booktitle, book.author, book.genre);
     }
 
+    fetchUser = (usernameObj) => {
+        return this.db.any('SELECT * FROM users WHERE username = $1', usernameObj.username);
+    }
+
     getAuthenticationToken = (details) => {
         return this.checkDetails(details)
             .then(this.generateAuthenticationToken)

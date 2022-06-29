@@ -12,21 +12,13 @@ export default function configurePassport(passport, api) {
         console.log(jwt_payload);
 
         // We will assign the `sub` property on the JWT to the database ID of user
-        /*
-        api.fetchUser({_id: jwt_payload.sub}, function(err, user) {
-
-            // This flow look familiar?  It is the same as when we implemented
-            // the `passport-local` strategy
-            if (err) {
-                return done(err, false);
-            }
-            if (user) {
+        api.fetchUser({username: jwt_payload.username})
+            .then((user) => {
+                if(user.length === 0) {
+                    return done(null, false);
+                }
                 return done(null, user);
-            } else {
-                return done(null, false);
-            }
-
-        }); */
-
+            })
+            .catch((err) => {return done(err, false)})
     }));
 }

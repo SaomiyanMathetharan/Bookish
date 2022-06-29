@@ -33,7 +33,7 @@ CREATE TABLE loans (
 
 GRANT SELECT, INSERT, UPDATE on ALL TABLES IN SCHEMA public TO bookish;
 
-INSERT INTO users VALUES ('SaoMat', 'Saomiyan', 'Mathetharan', 'sao@sao.com', 'thisIsHashed');
+INSERT INTO users VALUES ('SaoMat', 'Saomiyan', 'Mathetharan', 'sao@sao.com', 'deb1536f480475f7d593219aa1afd74c');
 INSERT INTO books VALUES (1, '9780333791035', 'The Great Gatsby', 'Fitzgerald');
 INSERT INTO copiesofbook VALUES ('1234567890', 1);
 INSERT INTO loans VALUES (1, date '2022-06-28', 'BORROWED', '1234567890', 'SaoMat');
