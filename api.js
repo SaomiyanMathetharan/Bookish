@@ -1,37 +1,30 @@
-import Book from "./models/book.js";
-import pgPromise from "pg-promise";
 import md5 from "md5-hash";
 import log4js from "log4js";
-import jwt from "jsonwebtoken"
-import {Sequelize} from "sequelize";
-import { book, BookCopy, Loan, User } from './database/database.js';
+import jwt from "jsonwebtoken";
+import { books, copiesofbook, loans, users } from './database/database.js';
 
 const logger = log4js.getLogger('api.js');
 
 export default class API {
 
     constructor() {
-        const pgp = pgPromise({schema: "public"});
-        this.db = pgp('postgres://bookish:bookish@localhost:5432/bookish');
-        //this.db = new Sequelize('postgres://bookish:bookish@localhost:5432/bookish')
     }
 
     getAllBooks() {
         logger.info('Getting list books from database');
-        return book.findAll()
+        return books.findAll()
             .then ((data)=>{
                 return data.map(book => this.createBook(book))
             })
     }
 
-    //doRequest = (path) =>
     createBook (book){
         logger.trace('Creating book object with details: ' + book);
         return book.dataValues;
     }
 
     fetchUser = (usernameObj) => {
-        return this.db.any('SELECT * FROM users WHERE username = $1', usernameObj.username);
+        return users.findOne({where: {username: usernameObj.username}});
     }
 
     getAuthenticationToken = (details) => {
@@ -50,7 +43,7 @@ export default class API {
     }
 
     checkCredentials = (details) => {
-        return this.db.any('SELECT * FROM users WHERE username = $1 AND hashedpassword = $2', [details.username, details.password])
+        return users.findOne({where: {username: details.username, hashedpassword: details.password}})
             .then((data) => {
                 if(data.length === 0) {
                     logger.warn("Incorrect credentials supplied")

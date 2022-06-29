@@ -15,11 +15,10 @@ export default function configurePassport(api) {
         // We will assign the `sub` property on the JWT to the database ID of user
         return api.fetchUser({username: jwt_payload.username})
             .then((user) => {
-                console.log(user)
-                if(user.length === 0) {
+                if(!user) {
                     return done(null, false);
                 }
-                return done(null, user[0]);
+                return done(null, user);
             })
             .catch((err) => {return done(err, false)})
     }));
