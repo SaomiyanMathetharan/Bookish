@@ -34,6 +34,12 @@ export function findBookByAuthor(author) {
         })
 }
 
+export function countCopiesOfBook(details) {
+    logger.info('Getting number of copies of books with title: '+details.title+' and author: '+details.author);
+    return books.count({where: {author: details.author, booktitle: details.title}})
+        .then((count) => {return {numberOfCopies: count}});
+}
+
 export function fetchUser(usernameObj)  {
     return users.findOne({where: {username: usernameObj.username}});
 }
