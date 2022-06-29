@@ -5,58 +5,52 @@ import { books, copiesofbook, loans, users } from './database/database.js';
 
 const logger = log4js.getLogger('api.js');
 
-export default class API {
+export function getAllBooks() {
+    logger.info('Getting list books from database');
+    return books.findAll()
+        .then ((data)=>{
+            return data.map(createBook)
+        })
+}
 
-    constructor() {
-    }
+function createBook (book){
+    logger.trace('Creating book object with details: ' + book);
+    return book.dataValues;
+}
 
-    getAllBooks() {
-        logger.info('Getting list books from database');
-        return books.findAll()
-            .then ((data)=>{
-                return data.map(book => this.createBook(book))
-            })
-    }
+export function fetchUser(usernameObj)  {
+    return users.findOne({where: {username: usernameObj.username}});
+}
 
-    createBook (book){
-        logger.trace('Creating book object with details: ' + book);
-        return book.dataValues;
-    }
+export function getAuthenticationToken(details) {
+    return checkDetails(details)
+        .then(generateAuthenticationToken)
+        .then((authToken) => {return {token: authToken}})
+}
 
-    fetchUser = (usernameObj) => {
-        return users.findOne({where: {username: usernameObj.username}});
-    }
+function generateAuthenticationToken(details) {
+    return jwt.sign({username: details.username}, "secretBookishKey");
+}
 
-    getAuthenticationToken = (details) => {
-        return this.checkDetails(details)
-            .then(this.generateAuthenticationToken)
-            .then((authToken) => {return {token: authToken}})
-    }
+function checkDetails(details) {
+    logger.info("Checking credentials")
+    return addHashedPasswordToDetails(details).then(checkCredentials)
+}
 
-    generateAuthenticationToken = (details) => {
-        return jwt.sign({username: details.username}, "secretBookishKey");
-    }
+function checkCredentials(details) {
+    return users.findOne({where: {username: details.username, hashedpassword: details.password}})
+        .then((data) => {
+            if(data.length === 0) {
+                logger.warn("Incorrect credentials supplied")
+                console.log(details.password)
+                throw "Incorrect credentials"
+            }
+                return details;
+        })
+}
 
-    checkDetails = (details) => {
-        logger.info("Checking credentials")
-        return this.addHashedPasswordToDetails(details).then(this.checkCredentials)
-    }
-
-    checkCredentials = (details) => {
-        return users.findOne({where: {username: details.username, hashedpassword: details.password}})
-            .then((data) => {
-                if(data.length === 0) {
-                    logger.warn("Incorrect credentials supplied")
-                    console.log(details.password)
-                    throw "Incorrect credentials"
-                }
-                    return details;
-            })
-    }
-
-    addHashedPasswordToDetails = (details) => {
-        details.password = md5.default(details.password);
-        logger.info("Successfully hashed password");
-        return Promise.resolve(details);
-    }
+function addHashedPasswordToDetails(details) {
+    details.password = md5.default(details.password);
+    logger.info("Successfully hashed password");
+    return Promise.resolve(details);
 }

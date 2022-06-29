@@ -1,8 +1,6 @@
 import log4js from 'log4js';
 import express from 'express';
-import API from "./api.js";
-import { question } from "readline-sync";
-import axios from "axios";
+import {getAllBooks, getAuthenticationToken} from "./api.js";
 import passport from "passport";
 import configurePassport from "./config/passport.js";
 
@@ -17,9 +15,7 @@ log4js.configure( {
 
 const logger = log4js.getLogger('index.js');
 
-const api = new API();
-
-configurePassport(api)
+configurePassport()
 
 const app = express();
 app.use(passport.initialize());
@@ -34,7 +30,7 @@ app.listen(port, () => {
 
 app.get('/books', passport.authenticate('jwt', { session: false }),
     function(req, res) {
-        api.getAllBooks()
+        getAllBooks()
             .then((result) => res.send(result))
             .catch((error) => {
                 console.log(error);
@@ -43,5 +39,5 @@ app.get('/books', passport.authenticate('jwt', { session: false }),
 });
 
 app.post("/login", (req, res) => {
-    api.getAuthenticationToken(req.body).then((tokenObject) => res.json(tokenObject));
+    getAuthenticationToken(req.body).then((tokenObject) => res.json(tokenObject));
 })
