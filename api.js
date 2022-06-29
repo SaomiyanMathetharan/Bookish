@@ -2,6 +2,7 @@ import md5 from "md5-hash";
 import log4js from "log4js";
 import jwt from "jsonwebtoken";
 import { books, copiesofbook, loans, users } from './database/database.js';
+import book from "./models/book.js";
 
 const logger = log4js.getLogger('api.js');
 
@@ -62,7 +63,7 @@ function checkDetails(details) {
 function checkCredentials(details) {
     return users.findOne({where: {username: details.username, hashedpassword: details.password}})
         .then((data) => {
-            if(data.length === 0) {
+            if(!data) {
                 logger.warn("Incorrect credentials supplied")
                 console.log(details.password)
                 throw "Incorrect credentials"
@@ -75,4 +76,26 @@ function addHashedPasswordToDetails(details) {
     details.password = md5.default(details.password);
     logger.info("Successfully hashed password");
     return Promise.resolve(details);
+}
+
+async function addNewBook(bookDetails){
+    //bookDetails = numberOfCopies, isbn, booktitle, author, genre
+    let getBookID = generateBookID(bookDetails)
+    await books.create({bookid: getBookID, isbn: details.isbn, booktitle: details.booktitle, author: details.author, genre: details.genre});
+    return getBookID;
+}
+
+function getBookID(bookDetails){
+    return users.findOne({where: {isbn: details.isbn, booktitle: details.booktitle, author: details.author, genre: details.genre}})
+        .then((data) => {
+            if(!data) {
+                logger.warn("Incorrect credentials supplied")
+                return addNewBook(bookDetails);
+            }
+            return data.bookid;
+        })
+}
+
+function generateBookID(){
+    return books.max('bookid')+1;
 }
