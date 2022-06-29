@@ -3,6 +3,8 @@ import pgPromise from "pg-promise";
 import md5 from "md5-hash";
 import log4js from "log4js";
 import jwt from "jsonwebtoken"
+import {Sequelize} from "sequelize";
+import { book, BookCopy, Loan, User } from './database/database.js';
 
 const logger = log4js.getLogger('api.js');
 
@@ -11,11 +13,12 @@ export default class API {
     constructor() {
         const pgp = pgPromise({schema: "public"});
         this.db = pgp('postgres://bookish:bookish@localhost:5432/bookish');
+        //this.db = new Sequelize('postgres://bookish:bookish@localhost:5432/bookish')
     }
 
     getAllBooks() {
         logger.info('Getting list books from database');
-        return this.db.any('SELECT * FROM books')
+        return book.findAll()
             .then ((data)=>{
                 return data.map(book => this.createBook(book))
             })
@@ -24,7 +27,7 @@ export default class API {
     //doRequest = (path) =>
     createBook (book){
         logger.trace('Creating book object with details: ' + book);
-        return new Book(book.bookid, book.isbn, book.booktitle, book.author, book.genre);
+        return book.dataValues;
     }
 
     fetchUser = (usernameObj) => {
