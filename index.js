@@ -32,31 +32,16 @@ app.listen(port, () => {
     console.log("Server running on port " + port)
 })
 
-app.get("/", async (req, res) => {
-    logger.info("Get request for / received, sending catalogue");
-    api.getAllBooks()
-        .then((result) => res.send(result))
-        .catch((error) => {
-            console.log(error);
-            res.status(500).send(error);
+app.get('/books', passport.authenticate('jwt', { session: false }),
+    function(req, res) {
+        api.getAllBooks()
+            .then((result) => res.send(result))
+            .catch((error) => {
+                console.log(error);
+                res.status(500).send(error);
         });
-})
+});
 
 app.post("/login", (req, res) => {
     api.getAuthenticationToken(req.body).then((tokenObject) => res.json(tokenObject));
 })
-
-app.post('/testToken', function (req, res) {
-    passport.authenticate('jwt', {session:false},
-        (err, user) => {
-            if (err || !user) {
-                return res.status(400).json({
-                    message: "Something went wrong :/",
-                    user: user
-                })
-            }
-            else {
-                return res.status(200);
-            }
-        })
-});
