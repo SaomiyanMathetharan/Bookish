@@ -26,6 +26,14 @@ export function findBookByTitle(bookTitle) {
         })
 }
 
+export function findBookByAuthor(author) {
+    logger.info('Getting list books with author: '+author);
+    return books.findAll({where: {author: author}})
+        .then ((data)=>{
+            return data.map(createBook)
+        })
+}
+
 export function fetchUser(usernameObj)  {
     return users.findOne({where: {username: usernameObj.username}});
 }

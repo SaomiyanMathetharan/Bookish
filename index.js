@@ -1,6 +1,6 @@
 import log4js from 'log4js';
 import express from 'express';
-import {findBookByTitle, getAllBooks, getAuthenticationToken} from "./api.js";
+import {findBookByTitle, findBookByAuthor, getAllBooks, getAuthenticationToken} from "./api.js";
 import passport from "passport";
 import configurePassport from "./config/passport.js";
 
@@ -41,6 +41,16 @@ app.get('/books', passport.authenticate('jwt', { session: false }),
 app.get('/findBookByTitle', passport.authenticate('jwt', { session: false }),
     function(req, res) {
         findBookByTitle(req.query.booktitle)
+            .then((result) => res.send(result))
+            .catch((error) => {
+                console.log(error);
+                res.status(500).send(error);
+            });
+    });
+
+app.get('/findBookByAuthor', passport.authenticate('jwt', { session: false }),
+    function(req, res) {
+        findBookByAuthor(req.query.author)
             .then((result) => res.send(result))
             .catch((error) => {
                 console.log(error);
